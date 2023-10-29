@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 import pickle
 
+pickle.dump(clf, open('model.pkl','wb'))
+
 app = Flask(__name__)
 CORS(app)
 model = pickle.load(open("model.pkl", "rb"))
