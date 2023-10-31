@@ -1,37 +1,36 @@
 <!DOCTYPE html>
-<html >
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Deployment ML Project</title>
+  <title>Classificador de Personagens de Demon Slayer</title>
   <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
-  
+  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
- <div class="login">
-	<h1>Classificador de espécies IRIS FLOWER</h1>
+  <span id="imagem1"><img src="{{ url_for('static', filename='Legendary_Logo_Pokemon.png') }}" alt=""></span></span>
+  <div class="resultados">
+    <h1>Classificador de Personagens de Demon Slayer</h1>
 
-     <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}" method="post">
-    <input type="text" name="sl" placeholder="Sepal length (cm)" required="required" />
-    <input type="text" name="sw" placeholder="Sepal width (cm)" required="required" />
-		<input type="text" name="pl" placeholder="Petal length (cm)" required="required" />
-		<input type="text" name="pw" placeholder="Petal length (cm)" required="required" />
+    <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict') }}" method="post">
+      <input type="text" name="Age" placeholder="Idade" required="required" />
+      <input type="text" name="Abilities" placeholder="Habilidades" required="required" />
+      <input type="text" name="BreathingStyle" placeholder="Estilo de Respiração" required="required" />
 
-
-        <button type="submit" class="btn btn-primary btn-block btn-large">Classificar IRIS</button>
+      <button type="submit" class="btn btn-primary btn-block btn-large">Classificar Personagem</button>
     </form>
 
-   <br>
-   <br>
-   {{ prediction_text }}
-
- </div>
-
-
+    <br>
+    <br>
+    <h1>Resultado:</h1>
+    {{ prediction_text }}
+    <p>O modelo analisa a idade, habilidades e estilo de respiração do personagem para fazer uma análise. 
+      Por exemplo, se você fornecer os dados de um personagem como entrada para o modelo, 
+      ele retornará a previsão de se o personagem é um Hashira ou não com base no treinamento que recebeu.</p>
+    <p>Você pode encontrar informações sobre os personagens em Demon Slayer na internet.</p>
+  </div>
 </body>
 </html>
