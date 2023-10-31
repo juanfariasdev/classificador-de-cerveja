@@ -1,36 +1,58 @@
-
-from sklearn.naive_bayes import GaussianNB
-from sklearn import tree
-from sklearn import datasets
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
 import pickle
 
+class Modelo:
+    def __init__(self):
+        # Dados de exemplo
+        data = {
+            'Character': ['Goku', 'Krillin', '139', '5,000,000,000', 'Saiyan Saga', 'Baby Saga', 'Dragon Ball Z', 'Dragon Ball GT', 'Goku', 'Bulma'],
+            'Power_Level': [4, 3, 139, 5000000000, 5, 5, 74, 17, 10, 1.5],
+            'Saga_or_Movie': ['Dragon Ball', 'Dragon Ball', 'Other', 'Other', 'Saiyan Saga', 'Baby Saga', 'Other', 'Other', 'Emperor Pilaf Saga', 'Emperor Pilaf Saga'],
+            'Dragon_Ball_Series': ['Dragon Ball', 'Dragon Ball', 'Other', 'Other', 'Dragon Ball Z', 'Dragon Ball Z', 'Dragon Ball Z', 'Dragon Ball GT', 'Dragon Ball', 'Dragon Ball']
+        }
 
-iris = datasets.load_iris()
-iris.keys()
+        # Criando um DataFrame
+        self.df = pd.DataFrame(data)
 
-labels_names = iris.target_names
-pickle.dump(labels_names, open('names.pkl','wb'))
-nomesiris = pickle.load(open('names.pkl','rb'))
+        # Selecionando as colunas relevantes
+        self.features = ['Power_Level']
+        self.target = 'Is_Super_Saiyan'
 
+        # Definindo se um personagem é Super Saiyan com base no Power_Level
+        self.df['Is_Super_Saiyan'] = self.df['Power_Level'] > 8000
 
-x = iris.data
-y = iris.target
+        # Extraindo os recursos (features) e os rótulos (labels)
+        self.X = self.df[self.features]
+        self.y = self.df[self.target]
 
-#realizando o split da base para teste
-from sklearn.model_selection import train_test_split
-x_treino,x_teste,y_treino,y_teste = train_test_split(x,y,test_size=0.3)
+        # Treinando um classificador de árvore de decisão
+        self.clf = None  # Inicialmente, o modelo não está treinado
 
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(x_treino, y_treino)
+    def train_model(self):
+        self.clf = DecisionTreeClassifier()
+        self.clf.fit(self.X, self.y)
+        # Salvando o modelo treinado em um arquivo
+        with open('dbz_model.pkl', 'wb') as model_file:
+            pickle.dump(self.clf, model_file)
 
-preditos = clf.predict(x_teste)
-print("Preditos:",preditos)
-print("Real    :",y_teste)
+    def create_character(self, character_name, power_level, saga_or_movie, db_series):
+        if self.clf is None:
+            self.train_model()
 
-from sklearn.metrics import accuracy_score
-print("Acuracia:", accuracy_score(y_teste,preditos))
+        # Gera uma previsão para o novo personagem
+        power_level = float(power_level)
+        is_super_saiyan = self.clf.predict([[power_level]])[0]
 
-pickle.dump(clf, open('model.pkl','wb'))
-model = pickle.load(open('model.pkl','rb'))
+        response = f"Nome do Personagem: {character_name}<br>"
+        response += f"Saga ou Filme: {saga_or_movie}<br>"
+        response += f"Série do Dragon Ball: {db_series}<br>"
+        response += f"Nível de Poder: {power_level}<br>"
+        response += "Este personagem é um Deus Super Saiyajin." if is_super_saiyan else "Este personagem não é um Deus Super Saiyajin."
 
+        return response
 
+# Exemplo de uso
+model = Modelo()
+character_info = model.create_character('Vegeta', 9000, 'Saiyan Saga', 'Dragon Ball Z')
+print(character_info)
