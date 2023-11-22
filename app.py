@@ -5,9 +5,8 @@ import pickle
 
 app = Flask(__name__)
 CORS(app)
-
-# Carregar o modelo treinado
 model = pickle.load(open("model.pkl", "rb"))
+names = pickle.load(open("names.pkl", "rb"))
 
 @app.route("/")
 def home():
@@ -15,20 +14,15 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        # Coletar dados do formulário HTML
-        age = int(request.form['Age'])
-        abilities = request.form['Abilities']
-        breathing_style = request.form['Breathing Style']
+    features = [float(x) for x in request.form.values()]
+    final_features = [np.array(features)]
+    pred = model.predict(final_features)
+    output = names[pred[0]]
+    return render_template("index.html", prediction_text="Iris " + output)
 
-        # Realizar a previsão
-        pred = model.predict([[age, abilities, breathing_style]])
-        prediction_text = "Hashira" if pred[0] == 1 else "Outro"
-
-        return render_template("index.html", prediction_text=prediction_text)
-
-    except Exception as e:
-        return render_template("index.html", prediction_text="Erro: Certifique-se de preencher todos os campos corretamente.")
-
-if __name__ == "__main":
-    app.run(debug=True)
+@app.route("/api", methods=["POST"])
+def results():
+    data = request.get_json(force=True)
+    pred = model.predict([np.array(list(data.values()))])
+    output = names[pred[0]]
+    return jsonify(output)

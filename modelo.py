@@ -1,27 +1,35 @@
-import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.naive_bayes import GaussianNB
+from sklearn import tree
+from sklearn import datasets
 import pickle
 
-# Carregando o arquivo CSV do Demon Slayer em um DataFrame
-demon_slayer_data = pd.read_csv('character.csv')
 
-# Selecionando as colunas relevantes
-features = ['Age', 'Abilities', 'Breathing Style']
-target = 'Race'  # Nome da coluna para prever se o personagem é Humano ou Demônio
+iris = datasets.load_iris()
+iris.keys()
 
-# Extraindo os recursos (features) e os rótulos (labels)
-x = demon_slayer_data[features]
-y = demon_slayer_data[target]
+labels_names = iris.target_names
+pickle.dump(labels_names, open('names.pkl','wb'))
+nomesiris = pickle.load(open('names.pkl','rb'))
 
-# Mapeando a coluna "Race" para valores binários (Humano: 0, Demônio: 1)
-y = y.map({'Human': 0, 'Demon': 1})
 
-# Treinando um classificador de árvore de decisão
-clf = DecisionTreeClassifier()
-clf = clf.fit(x, y)
+x = iris.data
+y = iris.target
 
-# Salvando o modelo treinado em um arquivo
-with open('demon_slayer_model.pkl', 'wb') as model_file:
-    pickle.dump(clf, model_file)
+#realizando o split da base para teste
+from sklearn.model_selection import train_test_split
+x_treino,x_teste,y_treino,y_teste = train_test_split(x,y,test_size=0.3)
 
-print("Modelo treinado e salvo com sucesso!")
+clf = tree.DecisionTreeClassifier()
+clf = clf.fit(x_treino, y_treino)
+
+preditos = clf.predict(x_teste)
+print("Preditos:",preditos)
+print("Real    :",y_teste)
+
+from sklearn.metrics import accuracy_score
+print("Acuracia:", accuracy_score(y_teste,preditos))
+
+pickle.dump(clf, open('model.pkl','wb'))
+model = pickle.load(open('model.pkl','rb'))
+
