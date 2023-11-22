@@ -1,35 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Classificador de Estilo de Cerveja</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Adicione os links de fontes e estilos adicionais aqui, se necessário -->
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
-  <span id="imagem1"><img src="{{ url_for('static', filename='Special_Beer_Logo.png') }}" alt=""></span></span>
-  <div class="resultados">
-    <h1>Classificador de Estilo de Cerveja</h1>
+  <header class="section">
+    <div class="container">
+      <div class="logo">Beer</div>
+    </div>
+  </header>
+  <main class="section">
+    <div class="container home">
+      <div>
+        <h2>Preencha com as avaliações da Cerveja</h2>
+        <p>O modelo analisa avaliações como:<br>
+          <b>Avaliação geral</b>, <b>aroma</b>, <b>aparência</b>, <b>paladar</b>, <b>sabor</b>, <b>teor alcoólico</b>
+          <br>para prever o <b>estilo de cerveja. </b>
+        </p>
+        <form action="{{ url_for('predict') }}" method="post">
+          <input type="number" min="0" max="5" name="review_overall" placeholder="Avaliação Geral"
+            required="required" />
+          <input type="number" min="0" max="5" name="review_aroma" placeholder="Avaliação de Aroma"
+            required="required" />
+          <input type="number" min="0" max="5" name="review_appearance" placeholder="Avaliação de Aparência"
+            required="required" />
+          <input type="number" min="0" max="5" name="review_palate" placeholder="Avaliação de Paladar"
+            required="required" />
+          <input type="number" min="0" max="5" name="review_taste" placeholder="Avaliação de Sabor"
+            required="required" />
+          <input type="number" min="0" max="100" name="beer_abv" placeholder="Teor Alcoólico" required="required" />
 
-    <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict') }}" method="post">
-      <input type="text" name="review_overall" placeholder="Avaliação Geral" required="required" />
-      <input type="text" name="review_aroma" placeholder="Avaliação de Aroma" required="required" />
-      <input type="text" name="review_appearance" placeholder="Avaliação de Aparência" required="required" />
-      <input type="text" name="review_palate" placeholder="Avaliação de Paladar" required="required" />
-      <input type="text" name="review_taste" placeholder="Avaliação de Sabor" required="required" />
-      <input type="text" name="beer_abv" placeholder="Teor Alcoólico" required="required" />
+          <button type="submit" class="submit">Classificar</button>
+        </form>
+      </div>
+      <div>
+        <div class="hero">
+          <img src="{{ url_for('static', filename='img/beer-1.png') }}" alt="Imagem de cerveja" />
 
-      <button type="submit" class="btn btn-primary btn-block btn-large">Classificar Estilo de Cerveja</button>
-    </form>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      {% if prediction_text %}
+      <h1>Resultado:</h1>
+      {{ prediction_text }}
+      {% endif %}
+    </div>
+  </main>
 
-    <br>
-    <br>
-    <h1>Resultado:</h1>
-    {{ prediction_text }}
-    <p>O modelo analisa avaliações, como a avaliação geral, de aroma, de aparência, de paladar, de sabor e o teor alcoólico, para prever o estilo de cerveja. </p>
-    <!-- Adicione informações adicionais ou links relevantes aqui, se necessário -->
-    <span id="imagem2"><img src="{{ url_for('static', filename='SpecialBeers.png') }}" alt=""></span>
-  </div>
 </body>
+
 </html>
